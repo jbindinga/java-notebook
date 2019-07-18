@@ -1,9 +1,32 @@
 FROM jupyter/minimal-notebook
 
-# Add RUN statements to install packages as the $NB_USER defined in the base images.
+USER root
 
-# Add a "USER root" statement followed by RUN statements to install system packages using apt-get,
-# change file permissions, etc.
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+  software-properties-common \
+  curl
 
-# If you do switch to root, always be sure to add a "USER $NB_USER" command at the end of the
-# file to ensure the image runs as a unprivileged user by default.
+# Install Zulu OpenJdk 11 (LTS)
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9 \
+  && apt-add-repository 'deb http://repos.azulsystems.com/ubuntu stable main' \
+  && apt install -y zulu-11
+
+# Unpack and install the kernel
+RUN curl -L https://github.com/SpencerPark/IJava/releases/download/v1.3.0/ijava-1.3.0.zip > ijava-kernel.zip
+RUN unzip ijava-kernel.zip -d ijava-kernel \
+  && cd ijava-kernel \
+  && python3 install.py --sys-prefix
+
+# Install jupyter RISE extension.
+RUN pip install jupyter_contrib-nbextensions RISE \
+  && jupyter-nbextension install rise --py --system \
+  && jupyter-nbextension enable rise --py --system \
+  && jupyter contrib nbextension install --system \
+  && jupyter nbextension enable hide_input/main
+
+# Cleanup
+RUN rm ijava-kernel.zip
+
+# Set user back to priviledged user.
+USER $NB_USER
