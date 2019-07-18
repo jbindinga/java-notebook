@@ -1,5 +1,7 @@
 FROM jupyter/minimal-notebook
 
+LABEL maintainer="Jeffrey Bindinga <jeffrey.bindinga@gmail.com>"
+
 USER root
 
 # Install dependencies
