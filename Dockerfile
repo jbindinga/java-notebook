@@ -30,5 +30,8 @@ RUN pip install jupyter_contrib-nbextensions RISE \
 # Cleanup
 RUN rm ijava-kernel.zip
 
+# Add README.md
+ADD "README.md" $HOME
+
 # Set user back to priviledged user.
 USER $NB_USER
