@@ -19,6 +19,7 @@ RUN apt install ./zulu-repo_1.0.0-3_all.deb
 # update the package sources
 RUN apt update
 RUN apt install -y zulu17-jdk
+RUN rm ./zulu-repo_1.0.0-3_all.deb
 
 # Unpack and install the kernel
 RUN curl -L https://github.com/SpencerPark/IJava/releases/download/v1.3.0/ijava-1.3.0.zip > ijava-kernel.zip
